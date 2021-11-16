@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "evet"
 version = "0.1.0"
-description = ""
+description = "A CLI app for generating event announcement message including multiple timezones."
 authors = ["Gökmen Görgen <gkmngrgn@gmail.com>"]
 
 [tool.poetry.scripts]
