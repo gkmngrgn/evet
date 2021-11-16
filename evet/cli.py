@@ -56,7 +56,6 @@ async def cli(
 
     click.echo("---")
     click.echo(message)
-    click.echo(date.strftime("%Y-%m-%d %H:%M"))
     click.echo()
 
     for tzname, date_str in event_date.get_dates_by_timezones():
