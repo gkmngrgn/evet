@@ -23,14 +23,12 @@ from evet.utils import click_coroutine
     type=click.DateTime(formats=["%Y-%m-%d %H:%M"]),
 )
 @click.option(
-    "-c",
-    "--cities",
-    help="Specify the cities for adding event date by timezones.",
+    "-t",
+    "--timezone",
+    help="Specify the timezone for adding event date by timezone.",
     type=str,
 )
-async def cli(
-    message: str, date: datetime.datetime, cities: t.Optional[str] = None
-) -> None:
+async def cli(message: str, date: datetime.datetime, timezone: t.List[str]) -> None:
     click.echo(message)
     click.echo(date.strftime("%Y-%m-%d %H:%M"))
 

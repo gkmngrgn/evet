@@ -5,4 +5,6 @@ timezones.
 
     evet --message="Rust Berlin Talks" \
          --date="2021-11-23 23:00" \
-         --cities=Ankara,Berlin,Tokio
+         --timezone="Europe/Istanbul" \
+         --timezone="Europe/Berlin" \
+         --timezone="Japan"

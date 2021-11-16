@@ -15,9 +15,10 @@ repos:
       - id: remove-crlf
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.0
+    rev: 5.10.1
     hooks:
       - id: isort
+        args: ["--profile", "black"]
 
   - repo: https://github.com/psf/black
     rev: 21.10b0
