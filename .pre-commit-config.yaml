@@ -31,4 +31,5 @@ repos:
       - id: mypy
         args: ["--strict", "--ignore-missing-imports", "--allow-untyped-decorators"]
         additional_dependencies:
-          - types-toml
+          - types-pytz
+          - types-tzlocal

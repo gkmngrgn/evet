@@ -3,7 +3,11 @@ import typing as t
 
 import click
 
+from evet.date import EventDate
+from evet.log import get_logger, set_log_level
 from evet.utils import click_coroutine
+
+logger = get_logger()
 
 
 @click.command()
@@ -27,10 +31,38 @@ from evet.utils import click_coroutine
     "--timezone",
     help="Specify the timezone for adding event date by timezone.",
     type=str,
+    multiple=True,
 )
-async def cli(message: str, date: datetime.datetime, timezone: t.List[str]) -> None:
+@click.option(
+    "-v",
+    "--verbose",
+    count=True,
+    help="Set verbosity for printing more logging messages.",
+)
+async def cli(
+    message: str,
+    date: datetime.datetime,
+    timezone: t.Tuple[str],
+    verbose: int,
+) -> None:
+    set_log_level(verbosity=verbose)
+
+    event_date = EventDate(date=date, timezones=timezone)
+    logger.debug(
+        "current timezone: %s - %s",
+        event_date.get_local_zone(),
+        event_date.get_local_zone_name(),
+    )
+
+    click.echo("---")
     click.echo(message)
     click.echo(date.strftime("%Y-%m-%d %H:%M"))
+    click.echo()
+
+    for tzname, date_str in event_date.get_dates_by_timezones():
+        click.echo(f"{tzname}: {date_str}")
+
+    click.echo("---")
 
 
 def run() -> None:
