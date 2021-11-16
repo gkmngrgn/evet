@@ -20,7 +20,7 @@ class EventDate(object):
         for tz_str in self.__timezones:
             date_tz = self.__date.astimezone(pytz.timezone(tz_str))
             date_str = date_tz.strftime("%Y-%m-%d %H:%M")
-            timezone_list.append((tz_str, date_str))
+            timezone_list.append((tz_str.rsplit("/", 1)[-1], date_str))
         return timezone_list
 
     def get_local_zone(self) -> t.Optional[str]:
