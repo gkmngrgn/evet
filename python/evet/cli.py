@@ -2,7 +2,6 @@ import datetime
 import typing as t
 
 import click
-
 from evet.date import EventDate
 from evet.log import get_logger, set_log_level
 from evet.utils import click_coroutine
