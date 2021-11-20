@@ -24,14 +24,8 @@ impl EventDate {
 
         // match NaiveDateTime::parse_from_str(&date_str, DATE_FORMAT) {
         match tz.datetime_from_str(&date_str, DATE_FORMAT) {
-            Ok(date) => {
-                dbg!(date);
-                Ok(Self { date, timezones })
-            }
-            Err(e) => {
-                dbg!(e);
-                Err("Error: Invalid value for '-d' / '--date': The format should be '%Y-%m-%d %H:%M'.")
-            }
+            Ok(date) => Ok(Self { date, timezones }),
+            Err(_) => Err("Error: The date format should be '%Y-%m-%d %H:%M'."),
         }
     }
 
