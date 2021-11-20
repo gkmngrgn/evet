@@ -8,3 +8,11 @@ timezones.
          --timezone="Europe/Istanbul" \
          --timezone="Europe/Berlin" \
          --timezone="Japan"
+
+    ---
+    Rust Berlin Talks
+
+    Istanbul: 2021-11-24 01:00
+    Berlin: 2021-11-23 23:00
+    Japan: 2021-11-24 07:00
+    ---
