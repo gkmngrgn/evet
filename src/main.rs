@@ -2,7 +2,7 @@ use evet::date::{EventDate, TimezoneData};
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "basic")]
+#[structopt(name = "evet")]
 struct Opt {
     #[structopt(short, long)]
     message: String,
