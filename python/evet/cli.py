@@ -26,6 +26,12 @@ logger = get_logger()
     type=click.DateTime(formats=["%Y-%m-%d %H:%M"]),
 )
 @click.option(
+    "-l",
+    "--local",
+    help="Specify the base timezone for the event.",
+    type=str,
+)
+@click.option(
     "-t",
     "--timezone",
     help="Specify the timezone for adding event date by timezone.",
@@ -41,12 +47,13 @@ logger = get_logger()
 async def cli(
     message: str,
     date: datetime.datetime,
+    local: str,
     timezone: t.Tuple[str],
     verbose: int,
 ) -> None:
     set_log_level(verbosity=verbose)
 
-    event_date = EventDate(date=date, timezones=timezone)
+    event_date = EventDate(date=date, local=local, timezones=timezone)
     logger.debug(
         "current timezone: %s - %s",
         event_date.get_local_zone(),
