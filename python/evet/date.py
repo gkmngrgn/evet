@@ -1,4 +1,6 @@
 import datetime
+import os
+import time
 import typing as t
 
 import pytz
@@ -8,9 +10,15 @@ from tzlocal import get_localzone
 class EventDate(object):
     def __init__(
         self,
+        local: str,
         date: datetime.datetime,
         timezones: t.Tuple[str],
     ) -> None:
+
+        if local:
+            os.environ["TZ"] = local
+            time.tzset()
+
         self.__date = date
         self.__local_zone = get_localzone()
         self.__timezones = timezones
