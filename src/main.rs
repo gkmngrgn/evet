@@ -13,13 +13,13 @@ struct Opt {
     #[structopt(short, long)]
     timezone: Vec<String>,
 
-    #[structopt(short, long, parse(from_occurrences))]
-    verbose: u8,
+    #[structopt(short, long)]
+    local: Option<String>,
 }
 
 fn main() {
     let opt = Opt::from_args();
-    match EventDate::new(opt.date.clone(), opt.timezone.clone()) {
+    match EventDate::new(opt.date.clone(), opt.local, opt.timezone.clone()) {
         Ok(d) => pretty_print(opt.message, d.get_dates_by_timezones()),
         Err(e) => eprintln!("{}", e),
     }
