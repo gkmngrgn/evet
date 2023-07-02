@@ -27,10 +27,9 @@ fn main() {
 
 fn pretty_print(message: String, timezones: Vec<TimezoneData>) {
     println!("---");
-    println!("{}", message);
-    println!("");
+    println!("{}\n", message);
     for tz_data in timezones {
-        println!("{}", tz_data.to_string());
+        println!("{}", tz_data);
     }
     println!("---");
 }

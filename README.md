@@ -3,7 +3,7 @@
 A CLI app for generating event announcement message including multiple
 timezones.
 
-```
+```shell
 evet --message="Rust Berlin Talks" \
      --date="2021-11-23 23:00"     \
      --timezone="Europe/Istanbul"  \

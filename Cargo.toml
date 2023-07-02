@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-chrono = "0.4.19"
+chrono = "0.4.23"
 chrono-tz = "0.6.0"
 structopt = "0.3.25"
