@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use chrono::NaiveDateTime;
 use chrono::prelude::*;
 use chrono_tz::Tz;
 
@@ -26,8 +27,7 @@ impl EventDate {
         local_timezone: Option<String>,
         timezones: Vec<String>,
     ) -> Result<Self, &'static str> {
-        let tz = Local::now().timezone();
-        match tz.datetime_from_str(&date_str, DATE_FORMAT) {
+        match NaiveDateTime::parse_from_str(&date_str, DATE_FORMAT) {
             Ok(date) => {
                 let date = match local_timezone {
                     Some(tz_str) => {
@@ -45,7 +45,7 @@ impl EventDate {
                             .naive_utc();
                         Local.from_utc_datetime(&date)
                     }
-                    None => date.with_timezone(&Local),
+                    None => Local.from_local_datetime(&date).unwrap(),
                 };
                 Ok(Self { date, timezones })
             }
