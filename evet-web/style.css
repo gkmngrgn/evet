@@ -8,3 +8,99 @@ html {
 body {
     background-color: #fafafa;
 }
+
+main.event-form {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-form__input {
+    margin-bottom: 20px; /* Increased space between form inputs */
+}
+
+.event-form__datetime {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.event-form__datetime .event-form__input {
+    flex: 1;
+}
+
+.event-form__datetime .event-form__input input {
+    height: 40px; /* Set a fixed height for date and time inputs */
+}
+
+.event-form__input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.event-form__input input,
+.event-form__input select,
+.event-form__input textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: monospace; /* Ensure monospace font is used */
+}
+
+.event-form__input textarea {
+    height: 150px; /* Increase height of message textarea */
+}
+
+.event-form__input select[multiple] {
+    height: 300px; /* Increased height of timezone element */
+    overflow-y: auto;
+}
+
+.event-form__input select[multiple] option {
+    padding: 8px 10px;
+    background-color: #fff; /* Revert background color to white */
+}
+
+.event-form__input select[multiple] option:checked {
+    background-color: #ba452e;
+    color: #fff;
+}
+
+.event-form__input select optgroup {
+    font-weight: bold;
+    color: #ba452e;
+    padding: 5px 0;
+    font-size: 18px;
+}
+
+.event-form__input select optgroup option {
+    padding-left: 20px;
+    color: #000;
+    font-size: 12px;
+}
+
+.event-form__input select optgroup option:first-of-type {
+    margin-top: 5px; /* Add top margin to the first option */
+}
+
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ba452e;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #a03d27;
+}
