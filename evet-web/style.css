@@ -9,7 +9,7 @@ body {
     background-color: #fafafa;
 }
 
-main.event-form {
+main {
     max-width: 600px;
     margin: 50px auto;
     padding: 20px;
@@ -19,21 +19,22 @@ main.event-form {
 }
 
 .event-form__input {
-    margin-bottom: 20px; /* Increased space between form inputs */
+    margin-bottom: 15px;
 }
 
 .event-form__datetime {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .event-form__datetime .event-form__input {
     flex: 1;
+    margin-bottom: 0;
 }
 
 .event-form__datetime .event-form__input input {
-    height: 40px; /* Set a fixed height for date and time inputs */
+    height: 40px;
 }
 
 .event-form__input label {
@@ -58,7 +59,7 @@ main.event-form {
 }
 
 .event-form__input select[multiple] {
-    height: 300px; /* Increased height of timezone element */
+    height: 300px;
     overflow-y: auto;
 }
 

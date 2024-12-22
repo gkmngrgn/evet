@@ -1,5 +1,11 @@
+use chrono::Local;
 use chrono_tz::TZ_VARIANTS;
+use evet::date::{EventDate, TimezoneData};
+use leptos::ev::{Event, MouseEvent};
 use leptos::prelude::*;
+use leptos::tachys::reactive_graph::bind::GetValue;
+use leptos::web_sys::{HtmlCollection, HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement};
+use wasm_bindgen::JsCast;
 
 fn main() {
     leptos::mount::mount_to_body(Home)
@@ -43,37 +49,74 @@ fn TimezoneSelect() -> impl IntoView {
 
 #[component]
 fn Home() -> impl IntoView {
-    let (count, set_count) = signal(0);
+    let (output, set_output) = signal(String::new());
     let timezoneLabel = "Timezones (hold Ctrl/Cmd to select multiple)";
+    let handle_submit = move |_| {
+        let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
+        let date = get_element_by_id::<HtmlInputElement>("date").value();
+        let time = get_element_by_id::<HtmlInputElement>("time").value();
+        let timezones = {
+            let options = get_element_by_id::<HtmlSelectElement>("timezone").selected_options();
+            let mut timezones = Vec::new();
+            for i in 0..options.length() {
+                let option = options.item(i).unwrap();
+                timezones.push(option.get_value());
+            }
+            timezones
+        };
+        let local_timezone = Local::now().offset().to_string();
+        let result = EventDate::new(date, Some(local_timezone), timezones)
+            .map(|event_date| {
+                format!(
+                    "---\n{}\n{}---\n",
+                    message,
+                    event_date
+                        .get_dates_by_timezones()
+                        .iter()
+                        .map(|tz| tz.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            })
+            .unwrap_or_else(|err| format!("Error: {}", err));
+        set_output.set(result);
+    };
 
     view! {
         <main class="event-form">
-            <div class="event-form__input">
-                <label for="message">Message</label>
-                <textarea id="message" placeholder="Enter your message"></textarea>
-            </div>
-            <div class="event-form__datetime">
+            <form id="event-form">
                 <div class="event-form__input">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" />
+                    <label for="message">Message</label>
+                    <textarea id="message" placeholder="Enter your message" required></textarea>
+                </div>
+                <div class="event-form__datetime">
+                    <div class="event-form__input">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" />
+                    </div>
+                    <div class="event-form__input">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" />
+                    </div>
                 </div>
                 <div class="event-form__input">
-                    <label for="time">Time</label>
-                    <input type="time" id="time" />
+                    <label for="timezone">{timezoneLabel}</label>
+                    <TimezoneSelect />
                 </div>
-            </div>
-            <div class="event-form__input">
-                <label for="timezone">{timezoneLabel}</label>
-                <TimezoneSelect />
-            </div>
-            <button>Submit</button>
-            <button on:click=move |_| *set_count.write() += 1>
-                {move || if count.get() == 0 {
-                    "Click me!".to_string()
-                } else {
-                    count.get().to_string()
-                }}
-            </button>
+                <button on:click=handle_submit>Submit</button>
+                <div>
+                    <h2>Output</h2>
+                    <p inner_html={move || output.get().replace("\n", "<br>")}></p>
+                </div>
+            </form>
         </main>
     }
+}
+
+fn get_element_by_id<T: JsCast>(id: &str) -> T {
+    document()
+        .get_element_by_id(id)
+        .unwrap()
+        .dyn_into::<T>()
+        .unwrap()
 }
