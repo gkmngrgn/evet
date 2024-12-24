@@ -10,12 +10,28 @@ body {
 }
 
 main {
-    max-width: 600px;
+    max-width: 800px; /* Expanded width */
     margin: 50px auto;
-    padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-form {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.event-form__left {
+    flex: 0 0 35%;
+}
+
+.event-form__right {
+    flex: 0 0 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .event-form__input {
@@ -56,6 +72,7 @@ main {
 
 .event-form__input textarea {
     height: 150px; /* Increase height of message textarea */
+    resize: vertical; /* Allow only vertical resizing */
 }
 
 .event-form__input select[multiple] {
@@ -100,8 +117,64 @@ button {
     color: #fff;
     cursor: pointer;
     font-size: 16px;
+    align-self: flex-start; /* Align button to the start */
 }
 
 button:hover {
     background-color: #a03d27;
+}
+
+/* Menubar styles */
+.menubar {
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    padding: 0 10px; /* Reduced from 20px to 10px */
+}
+
+.menubar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.menubar ul:first-child {
+    margin-right: auto; /* Push first ul to the left */
+}
+
+.menubar ul:last-child {
+    margin-left: auto; /* Push second ul to the right */
+}
+
+.menubar ul li {
+    display: inline;
+    padding: 10px 0;
+}
+
+.menubar ul li.spacer {
+    gap: 100%;
+    width: 100px;
+}
+
+.menubar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 10px; /* Reduced from 20px to 10px */
+}
+
+.menubar ul li a:hover {
+    text-decoration: underline;
+}
+
+p.small {
+    font-size: 10px;
+    color: #666;
+    margin-top: 10px;
+    text-align: right;
 }

@@ -48,7 +48,6 @@ fn TimezoneSelect() -> impl IntoView {
 #[component]
 fn Home() -> impl IntoView {
     let (output, set_output) = signal(String::new());
-    let timezoneLabel = "Timezones (hold Ctrl/Cmd to select multiple)";
     let handle_submit = move |_| {
         let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
         let datetime = get_element_by_id::<HtmlInputElement>("datetime")
@@ -92,25 +91,43 @@ fn Home() -> impl IntoView {
     };
 
     view! {
-        <main class="event-form" id="event-form">
-            <div class="event-form__input">
-                <label for="message">Message</label>
-                <textarea id="message" placeholder="Enter your message"></textarea>
-            </div>
-            <div class="event-form__input">
-                <label for="datetime">Date and Time</label>
-                <input type="datetime-local" id="datetime" />
-            </div>
-            <div class="event-form__input">
-                <label for="timezone">{timezoneLabel}</label>
-                <TimezoneSelect />
-            </div>
-            <button on:click=handle_submit>Submit</button>
-            <div>
-                <h2>Output</h2>
-                <p inner_html={move || output.get().replace("\n", "<br>")}></p>
-            </div>
-        </main>
+        <>
+            <main id="event-form">
+                <nav class="menubar">
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#submit" on:click=handle_submit>Submit</a></li>
+                    </ul>
+                </nav>
+
+                <div class="event-form">
+                    <div class="event-form__left">
+                        <div class="event-form__input">
+                            <label for="message">Message</label>
+                            <textarea id="message" placeholder="Enter your message"></textarea>
+                        </div>
+                        <div class="event-form__input">
+                            <label for="datetime">Date and Time</label>
+                            <input type="datetime-local" id="datetime" />
+                        </div>
+                        <div class="event-form__input">
+                            <label for="timezone">Timezones</label>
+                            <TimezoneSelect />
+                            <p class="small">hold Ctrl/Cmd to select multiple</p>
+                        </div>
+                    </div>
+                    <div class="event-form__right">
+                        <div>
+                            <p inner_html={move || output.get().replace("\n", "<br>")}></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </>
     }
 }
 
