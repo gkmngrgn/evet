@@ -19,3 +19,7 @@ Berlin: 2021-11-23 15:00
 Japan: 2021-11-23 23:00
 ---
 ```
+
+## EVET-WEB
+
+Standalone web interface of the project.
