@@ -1,10 +1,9 @@
 use chrono::Local;
 use chrono_tz::TZ_VARIANTS;
-use evet::date::{EventDate, TimezoneData};
-use leptos::ev::{Event, MouseEvent};
+use evet::date::EventDate;
 use leptos::prelude::*;
 use leptos::tachys::reactive_graph::bind::GetValue;
-use leptos::web_sys::{HtmlCollection, HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement};
+use leptos::web_sys::{HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement};
 use wasm_bindgen::JsCast;
 
 fn main() {
@@ -53,9 +52,8 @@ fn Home() -> impl IntoView {
     let timezoneLabel = "Timezones (hold Ctrl/Cmd to select multiple)";
     let handle_submit = move |_| {
         let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
-        let date = get_element_by_id::<HtmlInputElement>("date").value();
-        let time = get_element_by_id::<HtmlInputElement>("time").value();
-        let timezones = {
+        let datetime = get_element_by_id::<HtmlInputElement>("datetime").value().replace("T", " ");
+        let timezones: Vec<String> = {
             let options = get_element_by_id::<HtmlSelectElement>("timezone").selected_options();
             let mut timezones = Vec::new();
             for i in 0..options.length() {
@@ -64,51 +62,43 @@ fn Home() -> impl IntoView {
             }
             timezones
         };
-        let local_timezone = Local::now().offset().to_string();
-        let result = EventDate::new(date, Some(local_timezone), timezones)
-            .map(|event_date| {
-                format!(
-                    "---\n{}\n{}---\n",
-                    message,
-                    event_date
-                        .get_dates_by_timezones()
-                        .iter()
-                        .map(|tz| tz.to_string())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                )
-            })
-            .unwrap_or_else(|err| format!("Error: {}", err));
+
+        // Debugging information
+        leptos::web_sys::console::log_1(&format!("Message: {}", message).into());
+        leptos::web_sys::console::log_1(&format!("Datetime: {}", datetime).into());
+        leptos::web_sys::console::log_1(&format!("Timezones: {:?}", timezones).into());
+
+        // let local_timezone = Local::now().offset().to_string();
+        // let result = match EventDate::new(datetime.clone(), Some(local_timezone.clone()), timezones.clone()) {
+        //     Ok(d) => format!("---\n{}\n{}---\n", message, d.get_dates_by_timezones().iter().map(|tz| tz.to_string()).collect::<Vec<_>>().join(", ")),
+        //     Err(e) => {
+        //         leptos::web_sys::console::log_1(&format!("Error creating EventDate: {}", e).into());
+        //         e.to_string()
+        //     },
+        // };
+        let result = "Result".to_string();
         set_output.set(result);
     };
 
     view! {
-        <main class="event-form">
-            <form id="event-form">
-                <div class="event-form__input">
-                    <label for="message">Message</label>
-                    <textarea id="message" placeholder="Enter your message" required></textarea>
-                </div>
-                <div class="event-form__datetime">
-                    <div class="event-form__input">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" />
-                    </div>
-                    <div class="event-form__input">
-                        <label for="time">Time</label>
-                        <input type="time" id="time" />
-                    </div>
-                </div>
-                <div class="event-form__input">
-                    <label for="timezone">{timezoneLabel}</label>
-                    <TimezoneSelect />
-                </div>
-                <button on:click=handle_submit>Submit</button>
-                <div>
-                    <h2>Output</h2>
-                    <p inner_html={move || output.get().replace("\n", "<br>")}></p>
-                </div>
-            </form>
+        <main class="event-form" id="event-form">
+            <div class="event-form__input">
+                <label for="message">Message</label>
+                <textarea id="message" placeholder="Enter your message"></textarea>
+            </div>
+            <div class="event-form__input">
+                <label for="datetime">Date and Time</label>
+                <input type="datetime-local" id="datetime" />
+            </div>
+            <div class="event-form__input">
+                <label for="timezone">{timezoneLabel}</label>
+                <TimezoneSelect />
+            </div>
+            <button on:click=handle_submit>Submit</button>
+            <div>
+                <h2>Output</h2>
+                <p inner_html={move || output.get().replace("\n", "<br>")}></p>
+            </div>
         </main>
     }
 }
