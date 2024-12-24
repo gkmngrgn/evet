@@ -1,4 +1,3 @@
-use chrono::Local;
 use chrono_tz::TZ_VARIANTS;
 use evet::date::EventDate;
 use leptos::prelude::*;
@@ -52,7 +51,9 @@ fn Home() -> impl IntoView {
     let timezoneLabel = "Timezones (hold Ctrl/Cmd to select multiple)";
     let handle_submit = move |_| {
         let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
-        let datetime = get_element_by_id::<HtmlInputElement>("datetime").value().replace("T", " ");
+        let datetime = get_element_by_id::<HtmlInputElement>("datetime")
+            .value()
+            .replace("T", " ");
         let timezones: Vec<String> = {
             let options = get_element_by_id::<HtmlSelectElement>("timezone").selected_options();
             let mut timezones = Vec::new();
@@ -64,19 +65,29 @@ fn Home() -> impl IntoView {
         };
 
         // Debugging information
-        leptos::web_sys::console::log_1(&format!("Message: {}", message).into());
-        leptos::web_sys::console::log_1(&format!("Datetime: {}", datetime).into());
-        leptos::web_sys::console::log_1(&format!("Timezones: {:?}", timezones).into());
+        console_log(format!("Message: {}", message.clone()));
+        console_log(format!("Datetime: {}", datetime.clone()));
+        console_log(format!("Timezones: {:?}", timezones.clone()));
 
-        // let local_timezone = Local::now().offset().to_string();
-        // let result = match EventDate::new(datetime.clone(), Some(local_timezone.clone()), timezones.clone()) {
-        //     Ok(d) => format!("---\n{}\n{}---\n", message, d.get_dates_by_timezones().iter().map(|tz| tz.to_string()).collect::<Vec<_>>().join(", ")),
-        //     Err(e) => {
-        //         leptos::web_sys::console::log_1(&format!("Error creating EventDate: {}", e).into());
-        //         e.to_string()
-        //     },
-        // };
-        let result = "Result".to_string();
+        let result = match EventDate::new(
+            datetime.to_string(),
+            Some("Europe/Berlin".to_string()),
+            timezones,
+        ) {
+            Ok(d) => format!(
+                "---\n{}\n{}\n---\n",
+                message,
+                d.get_dates_by_timezones()
+                    .iter()
+                    .map(|tz| tz.to_string())
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            ),
+            Err(e) => {
+                console_log(format!("Error creating EventDate: {}", e));
+                e.to_string()
+            }
+        };
         set_output.set(result);
     };
 
@@ -109,4 +120,8 @@ fn get_element_by_id<T: JsCast>(id: &str) -> T {
         .unwrap()
         .dyn_into::<T>()
         .unwrap()
+}
+
+fn console_log(message: String) {
+    leptos::web_sys::console::log_1(&message.into());
 }
