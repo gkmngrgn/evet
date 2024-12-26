@@ -70,6 +70,11 @@ main {
     font-family: monospace; /* Ensure monospace font is used */
 }
 
+.event-form__input input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
 .event-form__input textarea {
     height: 150px; /* Increase height of message textarea */
     resize: vertical; /* Allow only vertical resizing */

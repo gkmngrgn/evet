@@ -9,3 +9,4 @@ chrono = "0.4"
 chrono-tz = "0.5"
 wasm-bindgen = "0.2"
 evet = { path = ".." }
+js-sys = "0.3.76"

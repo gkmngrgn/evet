@@ -1,9 +1,10 @@
 use chrono_tz::TZ_VARIANTS;
 use evet::date::EventDate;
+use js_sys::{Array, Intl, Object, Reflect};
 use leptos::prelude::*;
 use leptos::tachys::reactive_graph::bind::GetValue;
 use leptos::web_sys::{HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement};
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{JsCast, JsValue};
 
 fn main() {
     leptos::mount::mount_to_body(Home)
@@ -48,6 +49,7 @@ fn TimezoneSelect() -> impl IntoView {
 #[component]
 fn Home() -> impl IntoView {
     let (output, set_output) = signal(String::new());
+    let local_timezone = get_client_timezone();
     let handle_submit = move |_| {
         let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
         let datetime = get_element_by_id::<HtmlInputElement>("datetime")
@@ -62,6 +64,7 @@ fn Home() -> impl IntoView {
             }
             timezones
         };
+        let local_timezone = get_element_by_id::<HtmlInputElement>("local-timezone").value();
 
         // Debugging information
         console_log(format!("Message: {}", message.clone()));
@@ -70,7 +73,7 @@ fn Home() -> impl IntoView {
 
         let result = match EventDate::new(
             datetime.to_string(),
-            Some("Europe/Berlin".to_string()),
+            Some(local_timezone),
             timezones,
         ) {
             Ok(d) => format!(
@@ -119,6 +122,10 @@ fn Home() -> impl IntoView {
                             <TimezoneSelect />
                             <p class="small">hold Ctrl/Cmd to select multiple</p>
                         </div>
+                        <div class="event-form__input">
+                            <label for="local-timezone">Local Timezone</label>
+                            <input type="text" id="local-timezone" value={local_timezone} readonly />
+                        </div>
                     </div>
                     <div class="event-form__right">
                         <div>
@@ -129,6 +136,16 @@ fn Home() -> impl IntoView {
             </main>
         </>
     }
+}
+
+fn get_client_timezone() -> String {
+    let options = Intl::DateTimeFormat::new(&Array::new(), &Object::new())
+        .resolved_options();
+    let tz = Reflect::get(&options, &JsValue::from("timeZone"))
+            .expect("Cannot get timeZone")
+            .as_string()
+            .expect("timeZone is not a String");
+    tz
 }
 
 fn get_element_by_id<T: JsCast>(id: &str) -> T {
