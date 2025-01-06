@@ -47,6 +47,27 @@ fn TimezoneSelect() -> impl IntoView {
 }
 
 #[component]
+fn Description(output: ReadSignal<String>) -> impl IntoView {
+    view! {
+        <div class="description" style={move || {
+            if output.get().is_empty() {
+                "display: block;"
+            } else {
+                "display: none;"
+            }
+        }}>
+            <p>{ "Create an event with a message and time, and convert that time across multiple timezones." }</p>
+            <p>{ "You can:" }</p>
+            <ul>
+                <li>{ "copy and paste the invitation message." }</li>
+                <li>{ "download the invitation message as text or a calendar event file." }</li>
+                <li>{ "share the link to this page to invite others." }</li>
+            </ul>
+        </div>
+    }
+}
+
+#[component]
 fn Home() -> impl IntoView {
     let (output, set_output) = signal(String::new());
     let local_timezone = get_client_timezone();
@@ -71,11 +92,7 @@ fn Home() -> impl IntoView {
         console_log(format!("Datetime: {}", datetime.clone()));
         console_log(format!("Timezones: {:?}", timezones.clone()));
 
-        let result = match EventDate::new(
-            datetime.to_string(),
-            Some(local_timezone),
-            timezones,
-        ) {
+        let result = match EventDate::new(datetime.to_string(), Some(local_timezone), timezones) {
             Ok(d) => format!(
                 "---\n{}\n{}\n---\n",
                 message,
@@ -93,17 +110,25 @@ fn Home() -> impl IntoView {
         set_output.set(result);
     };
 
+    let handle_clear = move |_| {
+        if leptos::web_sys::window().unwrap().confirm_with_message("Are you sure you want to clear the form?").unwrap() {
+            get_element_by_id::<HtmlTextAreaElement>("message").set_value("");
+            get_element_by_id::<HtmlInputElement>("datetime").set_value("");
+            get_element_by_id::<HtmlSelectElement>("timezone").set_value("");
+            set_output.set(String::new());
+        }
+    };
+
     view! {
         <>
             <main id="event-form">
                 <nav class="menubar">
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li>EVET - Event Inviter</li>
                     </ul>
                     <ul>
                         <li><a href="#submit" on:click=handle_submit>Submit</a></li>
+                        <li><a href="#clear" on:click=handle_clear>Clear</a></li>
                     </ul>
                 </nav>
 
@@ -128,9 +153,11 @@ fn Home() -> impl IntoView {
                         </div>
                     </div>
                     <div class="event-form__right">
-                        <div>
-                            <p inner_html={move || output.get().replace("\n", "<br>")}></p>
-                        </div>
+                        <Description output=output />
+
+                        <p class="output" inner_html={move || {
+                            output.get().replace("\n", "<br>")
+                        }}></p>
                     </div>
                 </div>
             </main>
@@ -139,12 +166,11 @@ fn Home() -> impl IntoView {
 }
 
 fn get_client_timezone() -> String {
-    let options = Intl::DateTimeFormat::new(&Array::new(), &Object::new())
-        .resolved_options();
+    let options = Intl::DateTimeFormat::new(&Array::new(), &Object::new()).resolved_options();
     let tz = Reflect::get(&options, &JsValue::from("timeZone"))
-            .expect("Cannot get timeZone")
-            .as_string()
-            .expect("timeZone is not a String");
+        .expect("Cannot get timeZone")
+        .as_string()
+        .expect("timeZone is not a String");
     tz
 }
 

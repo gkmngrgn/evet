@@ -28,7 +28,6 @@ main {
 }
 
 .event-form__right {
-    flex: 0 0 65%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -36,6 +35,10 @@ main {
 
 .event-form__input {
     margin-bottom: 15px;
+}
+
+.event-form__input:last-child {
+    margin-bottom: 0;
 }
 
 .event-form__datetime {
@@ -182,4 +185,15 @@ p.small {
     color: #666;
     margin-top: 10px;
     text-align: right;
+}
+
+.description {
+    font-size: 18px; /* Bigger text size for description */
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.output {
+    font-size: 14px;
+    color: #000;
 }
