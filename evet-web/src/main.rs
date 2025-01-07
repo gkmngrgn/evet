@@ -3,7 +3,8 @@ use evet::date::EventDate;
 use js_sys::{Array, Intl, Object, Reflect};
 use leptos::prelude::*;
 use leptos::tachys::reactive_graph::bind::GetValue;
-use leptos::web_sys::{HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement};
+use leptos::web_sys::{HtmlElement, HtmlInputElement, HtmlSelectElement, HtmlTextAreaElement, Url, Blob};
+use leptos_use::{UseClipboardReturn, use_clipboard};
 use wasm_bindgen::{JsCast, JsValue};
 
 fn main() {
@@ -77,6 +78,7 @@ fn Description(output: ReadSignal<String>) -> impl IntoView {
 #[component]
 fn Home() -> impl IntoView {
     let (output, set_output) = signal(String::new());
+    let UseClipboardReturn { is_supported, text, copied, copy } = use_clipboard();
     let local_timezone = get_client_timezone();
     let handle_submit = move |_| {
         let message = get_element_by_id::<HtmlTextAreaElement>("message").value();
@@ -100,15 +102,28 @@ fn Home() -> impl IntoView {
         console_log(format!("Timezones: {:?}", timezones.clone()));
 
         let result = match EventDate::new(datetime.to_string(), Some(local_timezone), timezones) {
-            Ok(d) => format!(
-                "---\n{}\n{}\n---\n",
-                message,
-                d.get_dates_by_timezones()
+            Ok(d) => {
+                let dates_by_timezones = d.get_dates_by_timezones()
                     .iter()
                     .map(|tz| tz.to_string())
                     .collect::<Vec<_>>()
-                    .join("\n")
-            ),
+                    .join("\n");
+
+                let ics_content = format!(
+                    "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:{}\nDTSTART:{}\nEND:VEVENT\nEND:VCALENDAR",
+                    message,
+                    datetime.replace(" ", "T")
+                );
+
+                let blob = Blob::new_with_str_sequence(&Array::of1(&JsValue::from(ics_content))).unwrap();
+                let url = Url::create_object_url_with_blob(&blob).unwrap();
+
+                let download_link = get_element_by_id::<HtmlElement>("download");
+                download_link.set_attribute("href", &url).unwrap();
+                download_link.set_attribute("download", "event.ics").unwrap();
+
+                format!("---\n{}\n{}\n---\n", message, dates_by_timezones)
+            },
             Err(e) => {
                 console_log(format!("Error creating EventDate: {}", e));
                 e.to_string()
@@ -134,8 +149,38 @@ fn Home() -> impl IntoView {
                         <li>EVET - Event Inviter</li>
                     </ul>
                     <ul>
-                        <li><a href="#submit" on:click=handle_submit>Submit</a></li>
-                        <li><a href="#clear" on:click=handle_clear>Clear</a></li>
+                        <li>
+                            <a href="#submit" on:click=handle_submit>
+                                Submit form
+                            </a>
+                        </li>
+                        <li>
+                            <Show
+                                when=move || !output.get().is_empty()
+                                fallback=move || view! { <a aria_disabled="true">Clear form</a> }
+                            >
+                                <a href="#clear" on:click=handle_clear>Clear form</a>
+                            </Show>
+                        </li>
+                        <li>
+                            <Show
+                                when=move || !output.get().is_empty()
+                                fallback=move || view! { <a aria_disabled="true">Copy text</a> }
+                            >
+                                <a href="#copy" on:click={
+                                    let copy = copy.clone();
+                                    move |_| copy(&output.get())
+                                }>Copy text</a>
+                            </Show>
+                        </li>
+                        <li>
+                            <Show
+                                when=move || !output.get().is_empty()
+                                fallback=move || view! { <a aria_disabled="true">Download ICS file</a> }
+                            >
+                                <a href="#download" id="download">Download ICS file</a>
+                            </Show>
+                        </li>
                     </ul>
                 </nav>
 

@@ -30,7 +30,6 @@ main {
 .event-form__right {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .event-form__input {
@@ -84,7 +83,6 @@ main {
 }
 
 .event-form__input select[multiple] {
-    height: 300px;
     overflow-y: auto;
 }
 
@@ -178,6 +176,12 @@ button:hover {
 
 .menubar ul li a:hover {
     text-decoration: underline;
+}
+
+.menubar ul li a[aria-disabled="true"] {
+    color: #ccc;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 p.small {
