@@ -25,9 +25,16 @@ fn TimezoneSelect() -> impl IntoView {
         }
     }
 
+    // Sort the groups and the timezones within each group
+    let mut sorted_grouped_timezones: Vec<_> = grouped_timezones.into_iter().collect();
+    sorted_grouped_timezones.sort_by_key(|(group, _)| *group);
+    for (_, zones) in &mut sorted_grouped_timezones {
+        zones.sort();
+    }
+
     view! {
         <select id="timezone" multiple>
-            {grouped_timezones.iter().map(|(group, zones)| {
+            {sorted_grouped_timezones.iter().map(|(group, zones)| {
                 view! {
                     <optgroup label={*group}>
                         {zones.iter().map(|zone| {
