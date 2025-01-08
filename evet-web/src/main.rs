@@ -103,7 +103,6 @@ fn Home() -> impl IntoView {
 
         let result = match EventDate::new(datetime.to_string(), Some(local_timezone), timezones) {
             Ok(d) => {
-
                 let dates_by_timezones = d.get_dates_by_timezones()
                     .iter()
                     .map(|tz| tz.to_string())
