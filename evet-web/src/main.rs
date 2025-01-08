@@ -1,5 +1,3 @@
-use std::any::Any;
-
 use chrono_tz::TZ_VARIANTS;
 use evet::date::EventDate;
 use js_sys::{Array, Intl, Object, Reflect};
@@ -121,11 +119,8 @@ fn Home() -> impl IntoView {
                 let blob = Blob::new_with_str_sequence(&Array::of1(&JsValue::from(ics_content))).unwrap();
                 let url = Url::create_object_url_with_blob(&blob).unwrap();
 
-                console_log(format!("Error creating EventDate1"));
                 let download_link = get_element_by_id::<HtmlElement>("download");
-                console_log(format!("Error creating EventDate2"));
                 download_link.set_attribute("href", &url).unwrap();
-                console_log(format!("Error creating EventDate3"));
                 download_link.set_attribute("download", "event.ics").unwrap();
 
                 format!("---\n{}\n{}\n---\n", message, dates_by_timezones)
