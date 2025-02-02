@@ -176,7 +176,7 @@ fn Home() -> impl IntoView {
                         <li>
                             <Show
                                 when=move || !output.get().is_empty()
-                                fallback=move || view! { <a aria_disabled="true">Download ICS file</a> }
+                                fallback=move || view! { <a aria_disabled="true" href="#download" id="download">Download ICS file</a> }
                             >
                                 <a href="#download" id="download">Download ICS file</a>
                             </Show>
